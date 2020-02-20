@@ -419,11 +419,14 @@
 											.attr("data-action", "toggle-conditionals")
 											.html("Edit conditionals"),
 										t.data("_conditionsSettingsMenuItemInitialized", !0);
-										d.find("ul")
-											.children()
-											.eq(1)
-											.find("a:first")
-											.html("Edit conditionals");
+
+
+										// (GS) edit
+										// d.find("ul")
+										// 	.children()
+										// 	.eq(1)
+										// 	.find("a:first")
+										// 	.html("Edit conditionals");
 									}
 								});
 							}),
