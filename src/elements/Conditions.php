@@ -10,8 +10,6 @@
 
 namespace craftconditions\conditions\elements;
 
-use craftconditions\conditions\Conditions;
-
 use Craft;
 use craft\base\Element;
 use craft\elements\db\ElementQuery;
