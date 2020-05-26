@@ -73,7 +73,7 @@ class Conditions extends Plugin
      * @var string
      */
     public $schemaVersion = '1.0.0';
-	
+
 	protected $version = '1.0.0';
 	protected $pluginName = 'Conditions';
 	public $sourcePath = "";
@@ -167,7 +167,7 @@ class Conditions extends Plugin
     {
 		$this->view->registerAssetBundle(ConditionsAssets::class);
 	}
-	
+
 
     /**
      * @return string
@@ -190,10 +190,10 @@ class Conditions extends Plugin
     {
         $resources = array();
         $sources = array();
-       
+
 		// Get Asset volumes
 		$allAssetSources = Craft::$app->getVolumes()->getAllVolumes();
-		
+
 		if(!empty($allAssetSources))
 		{
 			foreach ($allAssetSources as $assetSource) {
@@ -206,42 +206,42 @@ class Conditions extends Plugin
         foreach ($allTagGroups as $tagGroup) {
             $sources['tagGroup:' . $tagGroup->id] = $tagGroup->fieldLayoutId;
         }
-      
+
 		// Get all Entry types records
-		
+
         $entryTypeRecords = EntryTypeRecord::find()->all();
-		
+
         if ($entryTypeRecords) {
             foreach ($entryTypeRecords as $entryType) {
                 $sources['entryType:' . $entryType->id] = $entryType->fieldLayoutId;
                 $sources['section:' . $entryType->sectionId] = $entryType->fieldLayoutId;
             }
         }
-		
-			
+
+
         // Get Global sets
         $allGlobalSets = Craft::$app->globals->getAllSets();
         foreach ($allGlobalSets as $globalSet) {
             $sources['globalSet:' . $globalSet->id] = $globalSet->fieldLayoutId;
         }
-			
+
         // Get Category groups
         $allCategoryGroups = Craft::$app->categories->getAllGroups();
         foreach ($allCategoryGroups as $categoryGroup) {
             $sources['categoryGroup:' . $categoryGroup->id] = $categoryGroup->fieldLayoutId;
         }
-	
 
-        // Retrive Users Field Layout 
+
+        // Retrive Users Field Layout
 		$usersFieldLayout = Craft::$app->fields->getLayoutByType('craft\elements\User');
-		
-		
-		
+
+
+
         if ($usersFieldLayout) {
             $sources['users'] = $usersFieldLayout->id;
         }
-	
-      
+
+
         // Get conditionals Array
         $conArr = array();
 		$tableSchema = Craft::$app->db->schema->getTableSchema('{{%conditions_conditionalsrecord}}');
@@ -271,7 +271,7 @@ class Conditions extends Plugin
      */
     public function onSaveConditionalLayout(Event $event)
     {
-		
+
 		$fldLayout = $event->layout;
 		$cndlModel = new ConditionalsModel();
 		$cndlModel->fieldLayoutId = $fldLayout->id;
@@ -289,20 +289,21 @@ class Conditions extends Plugin
         if (!Craft::$app->getRequest()->getIsPost()) {
             return false;
         }
-	
+
         $segments = Craft::$app->request->segments;
         $actionSegment = $segments[count($segments) - 1];
-		
+
         switch ($actionSegment) {
 
-            case 'switch-entry-type' :
-                Craft::$app->view->registerJs('Craft.ConditionsPlugin.FormLoad();');
-                break;
+            // GS: removed lines that break the CP when switching entry types
+            // case 'switch-entry-type' :
+                // Craft::$app->view->registerJs('Craft.ConditionsPlugin.FormLoad();');
+                // break;
 
             case 'get-editor-html' :
 
                 $elementId = (int)Craft::$app->getRequest()->getBodyParam('elementId');
-				
+
                 $element = $elementId ? Craft::$app->getElements()->getElementById($elementId) : null;
                 $elementType = $element ?Craft::$app->getElements()->getElementTypeById($elementId) : Craft::$app->getRequest()->getBodyParam('elementType');
                 $attributes =  Craft::$app->getRequest()->getBodyParam('attributes');
@@ -328,7 +329,7 @@ class Conditions extends Plugin
                         break;
 
                     case 'craft\elements\Asset' :
-						
+
                         $entityType = $element ? 'assetSource:' . $element->volumeId : null;
                         break;
 
@@ -344,7 +345,7 @@ class Conditions extends Plugin
                         $entityType = 'users';
                         break;
                 }
-				
+
                 if ($entityType) {
                     Craft::$app->view->registerJs('Craft.ConditionsPlugin.ElementEditorLoad("' . $entityType . '");');
                 }
@@ -363,10 +364,10 @@ class Conditions extends Plugin
     {
         $tgFields = array();
         $flds = Craft::$app->fields->getAllFields();
-		
+
 		$toggleFieldTypes = $this->getAllConditionalFieldTypes();
         foreach ($flds as $field) {
-	
+
 			$fieldType = join('', array_slice(explode('\\', get_class($field)), -1));
 			$classHandle = $fieldType;
             if (!$classHandle) {
@@ -397,7 +398,7 @@ class Conditions extends Plugin
         }
         return $data;
     }
- 
+
 	 /**
      * @return array
      */
@@ -423,8 +424,8 @@ class Conditions extends Plugin
 			'Calendar_Event',
             'PositionSelect',
             'Categories',
-            'ButtonBox_Colours', 
+            'ButtonBox_Colours',
         );
     }
-    
+
 }
